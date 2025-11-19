@@ -1,3 +1,5 @@
+import React from 'react';
+
 const sampleReviews = [
   {
     name: 'Rohit Mehta',

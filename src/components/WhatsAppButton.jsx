@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default function WhatsAppButton() {
   const phone = '918219506413';
   const text = encodeURIComponent('Hi Himalayan Trails! I would like to know more about Himachal packages.');

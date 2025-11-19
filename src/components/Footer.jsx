@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default function Footer({ className = '' }) {
   return (
     <footer className={`bg-slate-950 text-slate-200 border-t border-slate-800 ${className}`}>
