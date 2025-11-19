@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Hero from '../components/Hero.jsx';
 import PackageCard from '../components/PackageCard.jsx';
 import TestimonialCarousel from '../components/TestimonialCarousel.jsx';
@@ -8,14 +8,15 @@ export default function Home() {
   const [packages, setPackages] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [stats, setStats] = useState({ clients: 20147, rating: 4.9, reviews: 352 });
+  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
 
   useEffect(() => {
     (async () => {
       try {
         const [p, t, s] = await Promise.all([
-          fetch('/api/packages').then(r => r.json()),
-          fetch('/api/testimonials').then(r => r.json()),
-          fetch('/api/stats').then(r => r.json())
+          fetch(`${apiBase}/api/packages`).then(r => r.json()),
+          fetch(`${apiBase}/api/testimonials`).then(r => r.json()),
+          fetch(`${apiBase}/api/stats`).then(r => r.json())
         ]);
         setPackages(p);
         setTestimonials(t);

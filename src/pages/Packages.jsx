@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PackageCard from '../components/PackageCard.jsx';
 
@@ -64,11 +64,12 @@ export default function Packages() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(null);
+  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await fetch('/api/packages').then((r) => r.json());
+        const data = await fetch(`${apiBase}/api/packages`).then((r) => r.json());
         setPackages(data);
         if (data.length) {
           const featured = data.find((p) => p.popular) || data[0];

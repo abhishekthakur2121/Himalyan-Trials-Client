@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import TestimonialCarousel from '../components/TestimonialCarousel.jsx';
 
 // Fallback testimonials matching the familiar seed data
@@ -64,11 +64,12 @@ const fallbackTestimonials = [
 export default function Reviews() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await fetch('/api/testimonials').then((r) => r.json());
+        const data = await fetch(`${apiBase}/api/testimonials`).then((r) => r.json());
         setItems(Array.isArray(data) ? data : []);
       } catch (e) {
         setItems([]);

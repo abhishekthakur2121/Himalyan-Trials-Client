@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminPackages() {
@@ -17,6 +17,7 @@ export default function AdminPackages() {
   const navigate = useNavigate();
 
   const token = typeof window !== 'undefined' ? window.localStorage.getItem('ht_admin_token') : null;
+  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
 
   useEffect(() => {
     if (!token) {
@@ -28,7 +29,7 @@ export default function AdminPackages() {
       setStatus('loading');
       setError('');
       try {
-        const res = await fetch('/api/admin/packages', {
+        const res = await fetch(`${apiBase}/api/admin/packages`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -77,7 +78,7 @@ export default function AdminPackages() {
         ...form,
         price: Number(form.price)
       };
-      const url = editingId ? `/api/admin/packages/${editingId}` : '/api/admin/packages';
+      const url = editingId ? `${apiBase}/api/admin/packages/${editingId}` : `${apiBase}/api/admin/packages`;
       const method = editingId ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
@@ -123,7 +124,7 @@ export default function AdminPackages() {
     const confirmed = window.confirm('Delete this package? This cannot be undone.');
     if (!confirmed) return;
     try {
-      const res = await fetch(`/api/admin/packages/${id}`, {
+      const res = await fetch(`${apiBase}/api/admin/packages/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`
