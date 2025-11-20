@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Hero from "../components/Hero.jsx";
 import PackageCard from "../components/PackageCard.jsx";
 import TestimonialCarousel from "../components/TestimonialCarousel.jsx";
@@ -244,13 +244,13 @@ export default function Home() {
         </div>
 
         <div className="pt-6 text-center text-xs md:text-sm text-slate-600">
-          <a
-            href="/packages"
+          <Link
+            to="/packages"
             className="inline-flex items-center gap-1 text-emerald hover:text-emerald/80"
           >
             <span>View all detailed itineraries</span>
             <span>→</span>
-          </a>
+          </Link>
         </div>
       </section>
 
