@@ -14,6 +14,8 @@ export default function ContactForm() {
     message: prefillMessage
   });
   const [status, setStatus] = useState(null);
+  // const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  const apiBase = 'https://himalyan-trial-backend.onrender.com';
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -33,10 +35,10 @@ export default function ContactForm() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('https://himalyan-trial-backend.onrender.com/api/contact', {
+      const res = await fetch(`${apiBase}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)``
+        body: JSON.stringify(form)
       });
       if (!res.ok) throw new Error('Failed');
       setStatus('success');
