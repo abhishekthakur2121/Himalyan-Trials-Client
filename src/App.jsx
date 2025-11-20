@@ -10,6 +10,8 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminLogin from './pages/AdminLogin.jsx';
 import AdminSignup from './pages/AdminSignup.jsx';
 import AdminPackages from './pages/AdminPackages.jsx';
+import AdminReviews from './pages/AdminReviews.jsx';
+import AdminChangePassword from './pages/AdminChangePassword.jsx';
 import WhatsAppButton from './components/WhatsAppButton.jsx';
 
 export default function App() {
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/signup" element={<AdminSignup />} />
           <Route path="/admin/packages" element={<AdminPackages />} />
+          <Route path="/admin/reviews" element={<AdminReviews />} />
+          <Route path="/admin/change-password" element={<AdminChangePassword />} />
         </Route>
       </Routes>
       <WhatsAppButton />

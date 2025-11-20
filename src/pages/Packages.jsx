@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PackageCard from '../components/PackageCard.jsx';
 
@@ -64,7 +64,18 @@ export default function Packages() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(null);
+  const [sampleHighlight, setSampleHighlight] = useState(false);
   const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  const sampleRef = useRef(null);
+
+  const handleViewDetails = (pkg) => {
+    setSelected(pkg);
+    if (sampleRef.current) {
+      sampleRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setSampleHighlight(true);
+      window.setTimeout(() => setSampleHighlight(false), 700);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -125,7 +136,7 @@ export default function Packages() {
                 <button
                   key={`carousel-${pkg._id || pkg.title}`}
                   type="button"
-                  onClick={() => setSelected(pkg)}
+                  onClick={() => handleViewDetails(pkg)}
                   className={`min-w-[220px] max-w-[260px] rounded-xl p-4 text-left text-xs md:text-sm transition border ${
                     (selected && (selected._id || selected.title) === (pkg._id || pkg.title))
                       ? 'bg-white border-emerald/60 shadow-md'
@@ -170,7 +181,14 @@ export default function Packages() {
         </p>
       </section>
 
-      <section className="bg-slate-100 border border-slate-200 rounded-xl p-5 text-sm text-slate-700 space-y-3">
+      <section
+        ref={sampleRef}
+        className={`bg-slate-100 border rounded-xl p-5 text-sm text-slate-700 space-y-3 transition-all duration-500 ease-out ${
+          sampleHighlight
+            ? 'border-emerald/70 shadow-lg shadow-emerald/30 bg-emerald/5 scale-[1.01]'
+            : 'border-slate-200 shadow-sm'
+        }`}
+      >
         {selected ? (
           <>
             <p className="text-xs uppercase tracking-[0.18em] text-emerald mb-1">Sample trip plan</p>
@@ -215,18 +233,20 @@ export default function Packages() {
           </div>
         )}
         {filteredPackages.map((pkg) => (
-          <button
+          <div
             key={pkg._id || pkg.title}
-            type="button"
-            onClick={() => setSelected(pkg)}
-            className={`text-left rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald/70 ${
+            className={`text-left rounded-xl focus-within:ring-2 focus-within:ring-emerald/70 transition ${
               selected && (selected._id || selected.title) === (pkg._id || pkg.title)
                 ? 'ring-2 ring-emerald/70'
                 : ''
             }`}
           >
-            <PackageCard item={pkg} />
-          </button>
+            <PackageCard
+              item={pkg}
+              onSelect={() => setSelected(pkg)}
+              onViewDetails={() => handleViewDetails(pkg)}
+            />
+          </div>
         ))}
       </section>
     </main>

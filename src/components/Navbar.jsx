@@ -6,6 +6,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
+  const isAdminLoggedIn =
+    typeof window !== 'undefined' && !!window.localStorage.getItem('ht_admin_token');
+
   const linkCls = ({ isActive }) =>
     `block px-3 py-2 rounded-md text-sm font-medium transition ${
       isActive ? 'bg-emerald/10 text-emerald-800' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
@@ -42,7 +45,11 @@ export default function Navbar() {
           <NavLink to="/contact" className={linkCls} onClick={closeMenu}>
             Contact
           </NavLink>
-          <NavLink to="/admin/login" className={linkCls} onClick={closeMenu}>
+          <NavLink
+            to={isAdminLoggedIn ? '/admin' : '/admin/login'}
+            className={linkCls}
+            onClick={closeMenu}
+          >
             Admin
           </NavLink>
         </div>
@@ -106,7 +113,11 @@ export default function Navbar() {
             <NavLink to="/contact" className={linkCls} onClick={closeMenu}>
               Contact
             </NavLink>
-            <NavLink to="/admin/login" className={linkCls} onClick={closeMenu}>
+            <NavLink
+              to={isAdminLoggedIn ? '/admin' : '/admin/login'}
+              className={linkCls}
+              onClick={closeMenu}
+            >
               Admin
             </NavLink>
             <a

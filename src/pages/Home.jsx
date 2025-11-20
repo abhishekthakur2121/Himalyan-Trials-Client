@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Hero from '../components/Hero.jsx';
 import PackageCard from '../components/PackageCard.jsx';
 import TestimonialCarousel from '../components/TestimonialCarousel.jsx';
@@ -9,6 +10,7 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState([]);
   const [stats, setStats] = useState({ clients: 20147, rating: 4.9, reviews: 352 });
   const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -130,7 +132,11 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {homePackages.map((p) => (
-              <PackageCard key={p._id || p.title} item={p} />
+              <PackageCard
+                key={p._id || p.title}
+                item={p}
+                onViewDetails={() => navigate('/packages')}
+              />
             ))}
           </div>
         </div>

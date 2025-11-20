@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function AdminPackages() {
-  const [packages, setPackages] = useState([]);
+export default function AdminReviews() {
+  const [reviews, setReviews] = useState([]);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
-    title: '',
-    price: '',
-    duration: '',
-    image: '',
-    shortDesc: '',
-    popular: false
+    name: '',
+    location: '',
+    rating: '',
+    comment: '',
+    avatar: ''
   });
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const token = typeof window !== 'undefined' ? window.localStorage.getItem('ht_admin_token') : null;
   const apiBase = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -25,11 +24,11 @@ export default function AdminPackages() {
       return;
     }
 
-    const fetchPackages = async () => {
+    const fetchReviews = async () => {
       setStatus('loading');
       setError('');
       try {
-        const res = await fetch(`${apiBase}/api/admin/packages`, {
+        const res = await fetch(`${apiBase}/api/admin/testimonials`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -41,30 +40,30 @@ export default function AdminPackages() {
             return;
           }
           const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || 'Failed to load packages');
+          throw new Error(body.message || 'Failed to load reviews');
         }
         const data = await res.json();
-        setPackages(data || []);
+        setReviews(data || []);
         setStatus('success');
       } catch (err) {
         setStatus('error');
-        setError(err.message || 'Failed to load packages');
+        setError(err.message || 'Failed to load reviews');
       }
     };
 
-    fetchPackages();
+    fetchReviews();
   }, [navigate, token]);
 
   const resetForm = () => {
     setEditingId(null);
-    setForm({ title: '', price: '', duration: '', image: '', shortDesc: '', popular: false });
+    setForm({ name: '', location: '', rating: '', comment: '', avatar: '' });
   };
 
   const onChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
@@ -76,9 +75,11 @@ export default function AdminPackages() {
     try {
       const payload = {
         ...form,
-        price: Number(form.price)
+        rating: Number(form.rating)
       };
-      const url = editingId ? `${apiBase}/api/admin/packages/${editingId}` : `${apiBase}/api/admin/packages`;
+      const url = editingId
+        ? `${apiBase}/api/admin/testimonials/${editingId}`
+        : `${apiBase}/api/admin/testimonials`;
       const method = editingId ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
@@ -90,12 +91,12 @@ export default function AdminPackages() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || 'Failed to save package');
+        throw new Error(body.message || 'Failed to save review');
       }
       const saved = await res.json();
-      setPackages((prev) => {
+      setReviews((prev) => {
         if (editingId) {
-          return prev.map((p) => (p._id === saved._id ? saved : p));
+          return prev.map((r) => (r._id === saved._id ? saved : r));
         }
         return [...prev, saved];
       });
@@ -103,28 +104,27 @@ export default function AdminPackages() {
       setStatus('success');
     } catch (err) {
       setStatus('error');
-      setError(err.message || 'Failed to save package');
+      setError(err.message || 'Failed to save review');
     }
   };
 
-  const onEdit = (pkg) => {
-    setEditingId(pkg._id);
+  const onEdit = (review) => {
+    setEditingId(review._id);
     setForm({
-      title: pkg.title || '',
-      price: pkg.price != null ? String(pkg.price) : '',
-      duration: pkg.duration || '',
-      image: pkg.image || '',
-      shortDesc: pkg.shortDesc || '',
-      popular: Boolean(pkg.popular)
+      name: review.name || '',
+      location: review.location || '',
+      rating: review.rating != null ? String(review.rating) : '',
+      comment: review.comment || '',
+      avatar: review.avatar || ''
     });
   };
 
   const onDelete = async (id) => {
     if (!token) return;
-    const confirmed = window.confirm('Delete this package? This cannot be undone.');
+    const confirmed = window.confirm('Delete this review? This cannot be undone.');
     if (!confirmed) return;
     try {
-      const res = await fetch(`${apiBase}/api/admin/packages/${id}`, {
+      const res = await fetch(`${apiBase}/api/admin/testimonials/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`
@@ -132,11 +132,11 @@ export default function AdminPackages() {
       });
       if (!res.ok && res.status !== 204) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || 'Failed to delete package');
+        throw new Error(body.message || 'Failed to delete review');
       }
-      setPackages((prev) => prev.filter((p) => p._id !== id));
+      setReviews((prev) => prev.filter((r) => r._id !== id));
     } catch (err) {
-      setError(err.message || 'Failed to delete package');
+      setError(err.message || 'Failed to delete review');
     }
   };
 
@@ -145,10 +145,9 @@ export default function AdminPackages() {
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Manage Packages</h1>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Manage Reviews</h1>
             <p className="text-gray-300 max-w-2xl text-xs md:text-sm">
-              Create, edit, or remove Himachal tour packages. Changes here will immediately reflect on the public packages
-              page.
+              Add, edit, or remove customer reviews. Changes here will immediately reflect on the public reviews carousel.
             </p>
           </div>
           <button
@@ -164,85 +163,72 @@ export default function AdminPackages() {
           <form onSubmit={onSubmit} className="bg-navy/60 border border-white/10 rounded-xl p-5 space-y-3">
             <div className="flex items-center justify-between gap-2 mb-1">
               <h2 className="font-semibold text-sm md:text-base">
-                {editingId ? 'Edit package' : 'Add new package'}
+                {editingId ? 'Edit review' : 'Add new review'}
               </h2>
               {editingId && (
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-2 py-1 rounded-md bg-slate-800/90 border border-white/20 text-[11px] font-semibold text-slate-100 hover:bg-slate-700/90"
+                  className="px-2 py-1 rounded-md bg-slate-800 border border-white/20 text-[11px] font-semibold hover:bg-slate-700"
                 >
                   Cancel edit
                 </button>
               )}
             </div>
             <div className="space-y-1">
-              <label className="block text-gray-200">Title</label>
+              <label className="block text-gray-200">Name</label>
               <input
                 type="text"
-                name="title"
-                value={form.title}
+                name="name"
+                value={form.name}
                 onChange={onChange}
                 className="w-full px-3 py-2 rounded-md bg-slate-900 border border-white/10"
                 required
               />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <label className="block text-gray-200">Location</label>
+              <input
+                type="text"
+                name="location"
+                value={form.location}
+                onChange={onChange}
+                className="w-full px-3 py-2 rounded-md bg-slate-900 border border-white/10"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="block text-gray-200">Price (₹)</label>
+                <label className="block text-gray-200">Rating (1–5)</label>
                 <input
                   type="number"
-                  name="price"
-                  value={form.price}
+                  min="1"
+                  max="5"
+                  step="0.1"
+                  name="rating"
+                  value={form.rating}
                   onChange={onChange}
                   className="w-full px-3 py-2 rounded-md bg-slate-900 border border-white/10"
                   required
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-gray-200">Duration</label>
+                <label className="block text-gray-200">Avatar URL (optional)</label>
                 <input
-                  type="text"
-                  name="duration"
-                  value={form.duration}
+                  type="url"
+                  name="avatar"
+                  value={form.avatar}
                   onChange={onChange}
-                  placeholder="e.g. 4D/3N"
                   className="w-full px-3 py-2 rounded-md bg-slate-900 border border-white/10"
-                  required
                 />
-              </div>
-              <div className="flex items-center gap-2 mt-5 sm:mt-7">
-                <input
-                  id="popular"
-                  type="checkbox"
-                  name="popular"
-                  checked={form.popular}
-                  onChange={onChange}
-                  className="w-4 h-4 accent-emerald"
-                />
-                <label htmlFor="popular" className="text-gray-200 text-xs md:text-sm">
-                  Mark as popular
-                </label>
               </div>
             </div>
             <div className="space-y-1">
-              <label className="block text-gray-200">Image URL</label>
-              <input
-                type="url"
-                name="image"
-                value={form.image}
-                onChange={onChange}
-                className="w-full px-3 py-2 rounded-md bg-slate-900 border border-white/10"
-                required
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="block text-gray-200">Short description</label>
+              <label className="block text-gray-200">Comment</label>
               <textarea
-                name="shortDesc"
-                value={form.shortDesc}
+                name="comment"
+                value={form.comment}
                 onChange={onChange}
-                rows={3}
+                rows={4}
                 className="w-full px-3 py-2 rounded-md bg-slate-900 border border-white/10 resize-none"
                 required
               />
@@ -251,45 +237,45 @@ export default function AdminPackages() {
               type="submit"
               className="mt-2 w-full px-4 py-2 rounded-md bg-emerald text-navy font-semibold shadow-sm hover:bg-emerald/90 focus:outline-none focus:ring-2 focus:ring-emerald/70 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
-              {status === 'saving' ? 'Saving…' : editingId ? 'Update package' : 'Create package'}
+              {status === 'saving' ? 'Saving…' : editingId ? 'Update review' : 'Create review'}
             </button>
             {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
           </form>
 
           <section className="bg-navy/60 border border-white/10 rounded-xl p-5 space-y-3 max-h-[70vh] overflow-y-auto">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="font-semibold text-sm md:text-base">Existing packages</h2>
-              <span className="text-[11px] text-gray-400">{packages.length} total</span>
+              <h2 className="font-semibold text-sm md:text-base">Existing reviews</h2>
+              <span className="text-[11px] text-gray-400">{reviews.length} total</span>
             </div>
-            {status === 'loading' && <p className="text-xs text-gray-400">Loading packages…</p>}
-            {packages.length === 0 && status === 'success' && (
-              <p className="text-xs text-gray-300">No packages found. Start by creating one on the left.</p>
+            {status === 'loading' && <p className="text-xs text-gray-400">Loading reviews…</p>}
+            {reviews.length === 0 && status === 'success' && (
+              <p className="text-xs text-gray-300">No reviews found. Start by creating one on the left.</p>
             )}
-            {packages.length > 0 && (
+            {reviews.length > 0 && (
               <div className="space-y-2">
-                {packages.map((pkg) => (
+                {reviews.map((r) => (
                   <div
-                    key={pkg._id}
+                    key={r._id}
                     className="border border-white/10 rounded-lg p-3 bg-slate-900/70 flex items-start justify-between gap-3"
                   >
                     <div className="space-y-1">
-                      <p className="font-semibold text-sm md:text-base">{pkg.title}</p>
+                      <p className="font-semibold text-sm md:text-base">{r.name}</p>
                       <p className="text-[11px] text-gray-400">
-                        {pkg.duration} • From ₹{pkg.price?.toLocaleString('en-IN')} {pkg.popular ? '• Popular' : ''}
+                        {(r.location || '').trim()} {r.location ? '· ' : ''}Rating: {r.rating}
                       </p>
-                      <p className="text-[11px] text-gray-300 line-clamp-2">{pkg.shortDesc}</p>
+                      <p className="text-[11px] text-gray-300 line-clamp-3">{r.comment}</p>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                       <button
                         type="button"
-                        onClick={() => onEdit(pkg)}
+                        onClick={() => onEdit(r)}
                         className="px-2 py-1 rounded-md bg-emerald text-navy text-[11px] font-semibold shadow-sm hover:bg-emerald/90"
                       >
                         Edit
                       </button>
                       <button
                         type="button"
-                        onClick={() => onDelete(pkg._id)}
+                        onClick={() => onDelete(r._id)}
                         className="px-2 py-1 rounded-md bg-red-600/90 text-white text-[11px] font-semibold hover:bg-red-500/90"
                       >
                         Delete

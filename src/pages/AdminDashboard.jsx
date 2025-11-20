@@ -6,8 +6,8 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('pending');
-  const [search, setSearch] = useState(''); // applied search term
-  const [searchInput, setSearchInput] = useState(''); // value currently in the input
+  const [search, setSearch] = useState(''); 
+  const [searchInput, setSearchInput] = useState(''); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -146,14 +146,28 @@ export default function AdminDashboard() {
             <button
               type="button"
               onClick={() => navigate('/admin/packages')}
-              className="px-3 py-2 rounded-md bg-emerald text-navy text-xs md:text-sm font-semibold hover:bg-emerald/90"
+              className="px-3 py-2 rounded-md bg-emerald text-navy text-xs md:text-sm font-semibold shadow-sm hover:bg-emerald/90"
             >
               Manage packages
             </button>
             <button
               type="button"
+              onClick={() => navigate('/admin/reviews')}
+              className="px-3 py-2 rounded-md bg-emerald text-navy text-xs md:text-sm font-semibold shadow-sm hover:bg-emerald/90"
+            >
+              Manage reviews
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/admin/change-password')}
+              className="px-3 py-2 rounded-md bg-emerald text-navy text-xs md:text-sm font-semibold shadow-sm hover:bg-emerald/90"
+            >
+              Change password
+            </button>
+            <button
+              type="button"
               onClick={onLogout}
-              className="px-3 py-2 rounded-md bg-slate-800 border border-white/10 text-xs md:text-sm hover:bg-slate-700"
+              className="px-3 py-2 rounded-md bg-emerald text-navy text-xs md:text-sm font-semibold shadow-sm hover:bg-emerald/90"
             >
               Log out
             </button>
