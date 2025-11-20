@@ -21,7 +21,7 @@ export default function AdminDashboard() {
       setStatus('loading');
       setError('');
       try {
-        const res = await fetch('/api/admin/inquiries', {
+        const res = await fetch('https://himalyan-trial-backend.onrender.com/api/admin/inquiries', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
   const updateStatus = async (id, nextStatus) => {
     if (!token) return;
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}/status`, {
+      const res = await fetch(`https://himalyan-trial-backend.onrender.com/api/admin/inquiries/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
     const confirmed = window.confirm('Delete this inquiry? This cannot be undone.');
     if (!confirmed) return;
     try {
-      const res = await fetch(`/api/admin/inquiries/${id}`, {
+      const res = await fetch(`https://himalyan-trial-backend.onrender.com/api/admin/inquiries/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`

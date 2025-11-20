@@ -64,7 +64,8 @@ const fallbackTestimonials = [
 export default function Reviews() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  // const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  const apiBase = "https://himalyan-trial-backend.onrender.com";
 
   useEffect(() => {
     (async () => {

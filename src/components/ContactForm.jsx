@@ -33,10 +33,10 @@ export default function ContactForm() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('https://himalyan-trial-backend.onrender.com/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form)``
       });
       if (!res.ok) throw new Error('Failed');
       setStatus('success');

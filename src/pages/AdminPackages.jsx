@@ -17,7 +17,9 @@ export default function AdminPackages() {
   const navigate = useNavigate();
 
   const token = typeof window !== 'undefined' ? window.localStorage.getItem('ht_admin_token') : null;
-  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  // const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+    const apiBase = "https://himalyan-trial-backend.onrender.com";
+
 
   useEffect(() => {
     if (!token) {

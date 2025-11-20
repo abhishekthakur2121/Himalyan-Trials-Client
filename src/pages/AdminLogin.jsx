@@ -13,8 +13,9 @@ export default function AdminLogin() {
     e.preventDefault();
     setStatus('loading');
     setError('');
-    try {
-      const res = await fetch('/api/admin/login', {
+    try {    
+
+      const res = await fetch('https://himalyan-trial-backend.onrender.com/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)

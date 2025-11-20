@@ -65,7 +65,8 @@ export default function Packages() {
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState(null);
   const [sampleHighlight, setSampleHighlight] = useState(false);
-  const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+  // const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+    const apiBase = "https://himalyan-trial-backend.onrender.com";
   const sampleRef = useRef(null);
 
   const handleViewDetails = (pkg) => {
